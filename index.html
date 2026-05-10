@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeployFlow — Software Deployment Window Planner</title>
+  <meta name="description" content="Plan safe deployment windows for busy engineering teams.">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="DeployFlow home">
+        <span class="brand-mark">DF</span>
+        <span>
+          <strong>DeployFlow</strong>
+          <small>Release window planner</small>
+        </span>
+      </a>
+      <nav class="top-actions" aria-label="App actions">
+        <span class="status-pill" id="healthPill"><span class="pulse"></span> Local planner ready</span>
+        <button class="ghost-button" id="loadCatalogButton">Reset catalog</button>
+        <button class="primary-button compact" id="planTopButton">Generate plan</button>
+      </nav>
+    </header>
+
+    <section class="hero-card">
+      <div class="hero-copy">
+        <span class="eyebrow">Today’s release board</span>
+        <h1>Turn a messy deploy list into safe launch windows.</h1>
+        <p>Pick the services planned for today. DeployFlow detects team, resource, risk, and dependency collisions, then builds a release order your team can actually run.</p>
+      </div>
+      <div class="hero-metrics" aria-label="Current queue stats">
+        <div class="metric-card">
+          <small>Selected</small>
+          <strong id="selectedMetric">0</strong>
+          <span>deployments</span>
+        </div>
+        <div class="metric-card">
+          <small>Teams</small>
+          <strong id="teamsMetric">0</strong>
+          <span>involved</span>
+        </div>
+        <div class="metric-card">
+          <small>Risk</small>
+          <strong id="riskMetric">—</strong>
+          <span>today</span>
+        </div>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <section class="panel queue-panel">
+        <div class="panel-header">
+          <div>
+            <span class="section-kicker">Deployment queue</span>
+            <h2>Choose today’s services</h2>
+          </div>
+          <div class="inline-actions">
+            <button class="ghost-button" id="selectCoreButton">Core path</button>
+            <button class="ghost-button" id="selectAllButton">Select all</button>
+            <button class="ghost-button" id="clearButton">Clear</button>
+          </div>
+        </div>
+
+        <div class="queue-toolbar">
+          <label class="search-field">
+            <span>Search</span>
+            <input id="searchInput" type="search" placeholder="service, team, resource…">
+          </label>
+          <button class="secondary-button" id="toggleComposerButton">Add custom deploy</button>
+        </div>
+
+        <form class="composer" id="composer" hidden>
+          <div class="composer-grid">
+            <label>Service <input required id="customService" placeholder="e.g. Pricing API"></label>
+            <label>Team <input required id="customTeam" placeholder="Growth"></label>
+            <label>Risk
+              <select id="customRisk">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </label>
+            <label>Duration <input id="customDuration" type="number" min="5" value="30"></label>
+            <label class="wide">Depends on <input id="customDepends" placeholder="identity-api, feature-flags"></label>
+            <label class="wide">Resources <input id="customResources" placeholder="redis-cluster, pricing-db"></label>
+          </div>
+          <div class="composer-actions">
+            <button type="submit" class="primary-button compact">Add to board</button>
+            <button type="button" class="ghost-button" id="cancelComposerButton">Cancel</button>
+          </div>
+        </form>
+
+        <div class="service-grid" id="serviceGrid"></div>
+      </section>
+
+      <aside class="panel planner-panel">
+        <div class="panel-header stacked">
+          <span class="section-kicker">Planner setup</span>
+          <h2>Set the day constraints</h2>
+        </div>
+
+        <div class="control-group">
+          <label for="maxWindows">Max windows</label>
+          <div class="range-row">
+            <input id="maxWindows" type="range" min="1" max="8" value="6">
+            <strong id="maxWindowsValue">6</strong>
+          </div>
+        </div>
+
+        <div class="control-grid">
+          <label>Start time <input id="startTime" type="time" value="09:30"></label>
+          <label>Window length <input id="windowMinutes" type="number" min="15" max="180" value="45"></label>
+        </div>
+
+        <div class="mode-switch" role="group" aria-label="Algorithm mode">
+          <button class="mode active" data-mode="improved">Smart</button>
+          <button class="mode" data-mode="classic">Classic</button>
+        </div>
+
+        <button class="primary-button large" id="planButton">Generate release plan</button>
+
+        <div class="guardrails">
+          <span>Guardrails</span>
+          <ul>
+            <li>shared owners do not run parallel</li>
+            <li>shared infrastructure is separated</li>
+            <li>dependency releases go earlier</li>
+            <li>high-risk pairs get different windows</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+
+    <section class="result-shell" id="resultShell" hidden>
+      <div class="result-overview" id="resultOverview"></div>
+
+      <div class="result-grid">
+        <section class="panel timeline-panel">
+          <div class="panel-header">
+            <div>
+              <span class="section-kicker">Release timeline</span>
+              <h2>Windows to run today</h2>
+            </div>
+          </div>
+          <div id="timeline"></div>
+        </section>
+
+        <section class="panel graph-panel">
+          <div class="panel-header">
+            <div>
+              <span class="section-kicker">Conflict graph</span>
+              <h2>Why items are separated</h2>
+            </div>
+          </div>
+          <div class="graph-wrap" id="graphWrap"></div>
+        </section>
+
+        <section class="panel runbook-panel">
+          <div class="panel-header">
+            <div>
+              <span class="section-kicker">Operator runbook</span>
+              <h2>Launch order</h2>
+            </div>
+          </div>
+          <div id="runbook"></div>
+        </section>
+
+        <section class="panel insights-panel">
+          <div class="panel-header">
+            <div>
+              <span class="section-kicker">Planner insights</span>
+              <h2>Metrics & conflicts</h2>
+            </div>
+          </div>
+          <div id="insights"></div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
