@@ -4,6 +4,8 @@ DeployFlow is a Java web application that plans safe software deployment windows
 
 The application answers a practical question: if several services must be deployed today, which deployments can run at the same time and which must be separated?
 
+Repository: https://github.com/WitherGH/deployflow-project
+
 ## What The App Does
 
 DeployFlow takes a list of deployment tasks. Each task has a service name, owner team, risk level, duration, dependencies, resources, and tags.
@@ -151,13 +153,18 @@ The project is ready for free Render hosting with `Dockerfile` and `render.yaml`
 
 Render currently supports free web services for previews, hobby projects, and testing. Free services have limitations such as sleeping after inactivity and monthly usage limits, so this is suitable for a defense demo, not production.
 
+One-click deploy link:
+
+https://render.com/deploy?repo=https://github.com/WitherGH/deployflow-project
+
 Deployment steps:
 
-1. Put this project in a GitHub repository.
-2. Open Render and create a new Blueprint from the repository.
-3. Render will read `render.yaml`.
-4. Keep the service plan as `free`.
-5. After deployment, Render will show a public URL for the service. That URL is the demo link to share with reviewers.
+1. Open the one-click deploy link above.
+2. Sign in to Render with GitHub.
+3. Give Render access to the `WitherGH/deployflow-project` repository if it asks.
+4. Render will read `render.yaml`.
+5. Keep the service plan as `free`.
+6. After deployment, Render will show a public URL for the service. That URL is the demo link to share with reviewers.
 
 Official Render references:
 
