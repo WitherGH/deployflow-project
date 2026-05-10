@@ -1,0 +1,6 @@
+out
+docs
+scripts
+*.docx
+*.pptx
+.DS_Store
