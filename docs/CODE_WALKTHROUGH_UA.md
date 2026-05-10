@@ -106,6 +106,7 @@ flowchart LR
 - `DeployFlowApp` тепер читає порт із змінної середовища `PORT`, якщо порт не передали аргументом. Це потрібно для безкоштовного хостингу, наприклад Render.
 - JSON-парсер тепер перевіряє, що після основного JSON-документа немає зайвих символів, і краще повідомляє про некоректні числа.
 - Custom dependency тепер можна ввести більш природно: `Identity API`, `identity-api` та близькі варіанти розпізнаються через нормалізацію і порівняння без урахування регістру.
+- Frontend отримав static fallback planner. Якщо Java API недоступне, наприклад на GitHub Pages, інтерфейс все одно завантажує demo catalog і рахує план у браузері.
 - Додано `Dockerfile`, `.dockerignore` і `render.yaml`, щоб проєкт можна було розгорнути як Docker web service.
 - UI став легшим: зменшено візуальну важкість шрифтів, прибрано декоративні плями, прибрано негативний letter spacing, зменшено радіуси карток, збережено Inter і темний технічний стиль.
 
@@ -264,7 +265,7 @@ API endpoints:
 | --- | --- |
 | `resources/web/index.html` | HTML-структура інтерфейсу: topbar, hero, deployment queue, planner setup, result sections, toast. |
 | `resources/web/styles.css` | Увесь візуальний стиль: темна тема, layout, типографіка, кнопки, картки сервісів, timeline, graph, runbook, responsive behavior. |
-| `resources/web/app.js` | Вся логіка браузера: завантаження каталогу, вибір сервісів, додавання custom deployment, POST-запит на planner, рендеринг результатів, SVG conflict graph. |
+| `resources/web/app.js` | Вся логіка браузера: завантаження каталогу, вибір сервісів, додавання custom deployment, POST-запит на planner, static fallback planner для GitHub Pages, рендеринг результатів, SVG conflict graph. |
 
 Головні функції в `app.js`:
 

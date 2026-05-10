@@ -6,6 +6,8 @@ The application answers a practical question: if several services must be deploy
 
 Repository: https://github.com/WitherGH/deployflow-project
 
+Live GitHub Pages demo: https://withergh.github.io/deployflow-project/
+
 ## What The App Does
 
 DeployFlow takes a list of deployment tasks. Each task has a service name, owner team, risk level, duration, dependencies, resources, and tags.
@@ -149,7 +151,9 @@ run-demo.bat
 
 ## Free Hosting
 
-The project is ready for free Render hosting with `Dockerfile` and `render.yaml`.
+The project has a static GitHub Pages demo and is also ready for free Render hosting with `Dockerfile` and `render.yaml`.
+
+The GitHub Pages demo uses the same interface and a browser-side fallback planner, so reviewers can test the workflow without waiting for a backend service to wake up.
 
 Render currently supports free web services for previews, hobby projects, and testing. Free services have limitations such as sleeping after inactivity and monthly usage limits, so this is suitable for a defense demo, not production.
 
